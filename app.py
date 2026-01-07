@@ -1,3 +1,7 @@
+from streamlit_mic_recorder import mic_recorder
+import speech_recognition as sr
+import tempfile
+
 import streamlit as st
 
 # ---------- ELEGANT AI BACKGROUND ----------
@@ -50,6 +54,43 @@ section[data-testid="stSidebar"] {
 }
 </style>
 """, unsafe_allow_html=True)
+
+st.markdown("### 🎙️ Ask using Voice")
+
+audio = mic_recorder(
+    start_prompt="🎤 Start Recording",
+    stop_prompt="⏹️ Stop Recording",
+    just_once=True
+)
+
+def voice_to_text(audio_bytes):
+    recognizer = sr.Recognizer()
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio:
+        temp_audio.write(audio_bytes)
+        temp_audio_path = temp_audio.name
+
+    with sr.AudioFile(temp_audio_path) as source:
+        audio_data = recognizer.record(source)
+
+    try:
+        text = recognizer.recognize_google(audio_data)
+        return text
+    except:
+        return "Sorry, I could not understand your voice."
+
+if audio:
+    with st.spinner("🔍 Understanding your voice..."):
+        voice_text = voice_to_text(audio["bytes"])
+
+    st.success(f"🗣️ You said: {voice_text}")
+
+    # Add voice text as user message
+    st.session_state.messages.append({
+        "role": "user",
+        "content": voice_text
+    })
+
 
 from chatbot import chatbot_response
 
