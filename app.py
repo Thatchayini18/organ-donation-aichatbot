@@ -1,6 +1,40 @@
 import streamlit as st
 from chatbot import chatbot_response
 
+# ---------- BACKGROUND & CHAT STYLING ----------
+st.markdown("""
+<style>
+/* Full page background */
+.stApp {
+    background-color: #f5f7fa;
+}
+
+/* Chat bubbles */
+div[data-testid="stChatMessage"] {
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+/* User messages */
+div[data-testid="stChatMessage"][aria-label="user"] {
+    background-color: #d1e7dd;
+}
+
+/* Bot messages */
+div[data-testid="stChatMessage"][aria-label="assistant"] {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+}
+
+/* Sidebar background */
+section[data-testid="stSidebar"] {
+    background-color: #e9f5f2;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 st.set_page_config(page_title="Organ Donation AI Chatbot")
 
 st.title("Organ Donation AI Assistant")
