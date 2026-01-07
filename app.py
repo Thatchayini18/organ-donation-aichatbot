@@ -3,7 +3,7 @@ from chatbot import chatbot_response
 
 st.set_page_config(page_title="Organ Donation AI Chatbot")
 
-st.title("🫀 Organ Donation AI Assistant")
+st.title("Organ Donation AI Assistant")
 st.caption("24×7 Support for Donors and Recipients")
 
 if "messages" not in st.session_state:
