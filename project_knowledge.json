@@ -1,0 +1,8 @@
+{
+  "organ donation": "Organ donation is the process of donating organs to save lives.",
+  "donor registration": "Donors can register by providing personal and medical details.",
+  "recipient priority": "Recipients are prioritized based on urgency, compatibility, and waiting time.",
+  "matching": "Matching is done using blood group, organ type, and medical compatibility.",
+  "fake donors": "Machine learning is used to detect fake donor entries.",
+  "notification": "Recipients are notified instantly via email after a successful match."
+}
