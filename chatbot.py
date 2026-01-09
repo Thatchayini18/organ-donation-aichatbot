@@ -1,19 +1,20 @@
-import knowledge as kb
-
 def chatbot_response(user_input):
     text = user_input.lower()
 
-    if "donor" in text or "donate" in text:
-        return kb.donor_info()
+    if "organ donation" in text:
+        return "Organ donation is the process of donating organs to save lives."
 
-    elif "recipient" in text or "patient" in text:
-        return kb.recipient_info()
+    elif "donor" in text:
+        return "A donor is a person who voluntarily donates an organ."
 
-    elif "register" in text or "signup" in text:
-        return kb.registration_help()
+    elif "recipient" in text:
+        return "A recipient is a patient waiting to receive an organ."
 
-    elif "match" in text or "matching" in text:
-        return kb.matching_info()
+    elif "matching" in text:
+        return "Organ matching is based on blood group, urgency, and compatibility."
+
+    elif "priority" in text:
+        return "Recipients are prioritized based on urgency and waiting time."
 
     else:
-        return kb.general_help()
+        return "Sorry, I can answer only organ donation related questions."
