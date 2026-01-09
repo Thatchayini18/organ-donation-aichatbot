@@ -1,1 +1,19 @@
+This Organ Donation Management System is designed to reduce delays and inefficiencies
+in the organ donation process.
+
+The system allows donors and recipients to register on a common platform.
+
+Donor registration includes personal details, blood group, organ type, and medical history.
+
+Recipient registration includes urgency level, required organ, blood group, and medical condition.
+
+The system prioritizes recipients based on urgency, compatibility, and waiting time.
+
+Machine learning techniques are used to detect fake donor entries.
+
+Once a valid donor-recipient match is found, the recipient is immediately notified via email.
+
+The system includes dashboards for administrators to monitor registrations and matches.
+
+The AI chatbot assists donors, recipients, and administrators by answering queries related to the system.
 
