@@ -7,7 +7,7 @@ from chatbot import chatbot_response
 
 st.set_page_config(page_title="Organ Donation Chatbot", page_icon="🫀")
 
-st.title("🫀 Organ Donation Chatbot")
+st.title("Organ Donation Chatbot")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
