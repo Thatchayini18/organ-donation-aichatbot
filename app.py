@@ -1,198 +1,55 @@
+import streamlit as st
 from streamlit_mic_recorder import mic_recorder
 import speech_recognition as sr
 import tempfile
-
-import streamlit as st
-
-# ---------- ELEGANT AI BACKGROUND ----------
-st.markdown("""
-<style>
-/* Full background */
-.stApp {
-    background: linear-gradient(135deg,
-        #f3e7ff,
-        #e6f0ff,
-        #fce7f3);
-    background-attachment: fixed;
-}
-
-/* Glassmorphism container */
-.glass-card {
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-    margin-bottom: 20px;
-}
-
-/* Chat bubbles */
-div[data-testid="stChatMessage"] {
-    border-radius: 18px;
-    padding: 14px;
-    margin-bottom: 10px;
-    max-width: 75%;
-}
-
-/* User message */
-div[data-testid="stChatMessage"][aria-label="user"] {
-    background: linear-gradient(135deg, #c7d2fe, #e0e7ff);
-    margin-left: auto;
-}
-
-/* Assistant message */
-div[data-testid="stChatMessage"][aria-label="assistant"] {
-    background: rgba(255,255,255,0.85);
-    border: 1px solid rgba(255,255,255,0.6);
-    margin-right: auto;
-}
-
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #f3e8ff, #e0f2fe);
-}
-</style>
-""", unsafe_allow_html=True)
-
-st.markdown("### 🎙️ Ask using Voice")
-
-audio = mic_recorder(
-    start_prompt="🎤 Start Recording",
-    stop_prompt="⏹️ Stop Recording",
-    just_once=True
-)
-
-def voice_to_text(audio_bytes):
-    recognizer = sr.Recognizer()
-
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio:
-        temp_audio.write(audio_bytes)
-        temp_audio_path = temp_audio.name
-
-    with sr.AudioFile(temp_audio_path) as source:
-        audio_data = recognizer.record(source)
-
-    try:
-        text = recognizer.recognize_google(audio_data)
-        return text
-    except:
-        return "Sorry, I could not understand your voice."
-
-if audio:
-    with st.spinner("🔍 Understanding your voice..."):
-        voice_text = voice_to_text(audio["bytes"])
-
-    st.success(f"🗣️ You said: {voice_text}")
-
-    # Add voice text as user message
-    st.session_state.messages.append({
-        "role": "user",
-        "content": voice_text
-    })
-
-
+import os
 from chatbot import chatbot_response
 
-# ---------- BACKGROUND & CHAT STYLING ----------
-st.markdown("""
-<style>
-/* Full page background */
-.stApp {
-    background-color: #f5f7fa;
-}
+st.set_page_config(page_title="Organ Donation Chatbot", page_icon="🫀")
 
-/* Chat bubbles */
-div[data-testid="stChatMessage"] {
-    padding: 12px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-}
-
-/* User messages */
-div[data-testid="stChatMessage"][aria-label="user"] {
-    background-color: #d1e7dd;
-}
-
-/* Bot messages */
-div[data-testid="stChatMessage"][aria-label="assistant"] {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-}
-
-/* Sidebar background */
-section[data-testid="stSidebar"] {
-    background-color: #e9f5f2;
-}
-</style>
-""", unsafe_allow_html=True)
-
-
-st.set_page_config(page_title="Organ Donation AI Chatbot")
-
-st.title("Organ Donation AI Assistant")
-
-st.markdown("""
-<div class="glass-card">
-    <h3>🤖 Your AI Health Assistant</h3>
-    <p>
-    I am here to guide you through organ donation, registration,
-    recipient priority, and matching — clearly and compassionately.
-    </p>
-</div>
-""", unsafe_allow_html=True)
-st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    if st.button("🫀 Donor Help"):
-        st.session_state.messages.append({
-            "role": "assistant",
-            "content": "I can help you understand donor eligibility, safety, and registration."
-        })
-
-with col2:
-    if st.button("🏥 Recipient Help"):
-        st.session_state.messages.append({
-            "role": "assistant",
-            "content": "I will explain recipient priority, matching, and waiting process."
-        })
-
-with col3:
-    if st.button("🔄 Matching Info"):
-        st.session_state.messages.append({
-            "role": "assistant",
-            "content": "Let me explain how organ matching works using AI and medical rules."
-        })
-
-st.markdown("</div>", unsafe_allow_html=True)
-
-
-st.caption("24×7 Support for Donors and Recipients")
+st.title("🫀 Organ Donation Chatbot")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+# Show chat
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-user_input = st.chat_input("Ask your question here...")
+# Voice input BELOW chat (like ChatGPT)
+col1, col2 = st.columns([6,1])
 
-if user_input:
-    st.session_state.messages.append(
-        {"role": "user", "content": user_input}
-    )
+with col1:
+    user_text = st.chat_input("Type your question here...")
 
-    response = chatbot_response(user_input)
+with col2:
+    audio = mic_recorder(start_prompt="🎤", stop_prompt="⏹️", just_once=True)
 
-    st.session_state.messages.append(
-        {"role": "assistant", "content": response}
-    )
+def voice_to_text(audio_bytes):
+    r = sr.Recognizer()
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
+        f.write(audio_bytes)
+        path = f.name
+    with sr.AudioFile(path) as source:
+        audio_data = r.record(source)
+    os.remove(path)
+    return r.recognize_google(audio_data)
 
-    st.rerun()
+# Handle voice
+if audio:
+    try:
+        voice_text = voice_to_text(audio["bytes"])
+        st.session_state.messages.append({"role": "user", "content": voice_text})
+        reply = chatbot_response(voice_text)
+        st.session_state.messages.append({"role": "assistant", "content": reply})
+        st.rerun()
+    except:
+        st.warning("Voice not recognized")
 
-if st.button("🔄 Clear Chat"):
-    st.session_state.messages = []
+# Handle text
+if user_text:
+    st.session_state.messages.append({"role": "user", "content": user_text})
+    reply = chatbot_response(user_text)
+    st.session_state.messages.append({"role": "assistant", "content": reply})
     st.rerun()
